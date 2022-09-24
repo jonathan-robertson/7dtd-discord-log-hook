@@ -28,14 +28,6 @@ namespace DiscordLogHook.Data {
          */
         public AllowedMentions allowed_mentions;
         /**
-         * <summary>the components to include with the message</summary>
-         */
-        public Component[] components;
-        /**
-         * <summary>the contents of the file being sent</summary>
-         */
-        public FileContents[] files;
-        /**
          * <summary>JSON encoded body of non-file params</summary>
          */
         public string payload_json;
@@ -51,20 +43,6 @@ namespace DiscordLogHook.Data {
          * <summary>name of thread to create (requires the webhook channel to be a forum channel)</summary>
          */
         public string thread_name;
-
-        /*
-        public Payload(string message) {
-            if (message.Length > 2000) {
-                content = message.Substring(0, 2000);
-            } else {
-                content = message;
-            }
-        }
-        */
-
-        // #007fff = 32767 = blue = info
-        // #ff8000 = 16744448 = orange = warning
-        // #ff007f = 16711807 = pink/red = err
 
         public Payload() { }
 
@@ -114,27 +92,8 @@ namespace DiscordLogHook.Data {
             }
         }
 
-        /*
-        public Payload(string message, List<string> previousLines, int mainColor = 16744448, int historyColor = 32767) {
-            var content = previousLines
-                .Select(line => new Embed() { description = line, color = historyColor })
-                .ToList();
-            content.Add(new Embed() { description = message, color = mainColor });
-            embeds = content.ToArray();
-        }
-
-        public Payload(string message, string trace, List<string> previousLines, int mainColor = 16711807, int historyColor = 32767) {
-            var content = previousLines
-                .Select(line => new Embed() { description = line, color = historyColor })
-                .ToList();
-            content.Add(new Embed() { description = $"{message}\n> {trace}", color = mainColor });
-            embeds = content.ToArray();
-        }
-        */
-
         public static Payload Info(string message) {
             return new Payload(message, null, 32767);
-            // return new Payload() { content = message };
         }
 
         public static Payload Warn(string message, List<string> previousLines) {

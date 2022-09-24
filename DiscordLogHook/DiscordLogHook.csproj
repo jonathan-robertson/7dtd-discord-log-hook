@@ -65,15 +65,8 @@
     <Compile Include="Commands\ConsoleCmdDiscordLogHook.cs" />
     <Compile Include="Data\AllowedMentions.cs" />
     <Compile Include="Data\Attachment.cs" />
-    <Compile Include="Data\Channel.cs" />
-    <Compile Include="Data\Component.cs" />
     <Compile Include="Data\Embed.cs" />
-    <Compile Include="Data\FileContents.cs" />
-    <Compile Include="Data\Guild.cs" />
     <Compile Include="Data\Payload.cs" />
-    <Compile Include="Data\User.cs" />
-    <Compile Include="Data\Webhook.cs" />
-    <Compile Include="Data\WebhookType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\DiscordLogger.cs" />
     <Compile Include="Utilities\Json.cs" />
