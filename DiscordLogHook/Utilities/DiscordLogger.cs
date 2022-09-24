@@ -1,5 +1,6 @@
 ﻿using DiscordLogHook.Data;
 using System.Collections;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,12 +18,14 @@ namespace DiscordLogHook.Utilities {
         private DiscordLogger() { }
 
         internal static void LogCallbackDelegate(string _msg, string _trace, LogType _type) {
+            if (_type == LogType.Log || Settings.loggerIgnorelist.Where(item => _msg.Contains(item)).Any()) {
+                if (Settings.loggerWebhooks.Count > 0) {
+                    RollingQueue.Add(_msg);
+                }
+                return;
+            }
+
             switch (_type) {
-                case LogType.Log:
-                    if (Settings.loggerWebhooks.Count > 0) {
-                        RollingQueue.Add(_msg);
-                    }
-                    return;
                 case LogType.Warning:
                     Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Warn(_msg, RollingQueue.GetLines()).Serialize())));
                     return;

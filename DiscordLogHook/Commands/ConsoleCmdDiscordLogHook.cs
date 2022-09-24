@@ -25,8 +25,11 @@ namespace DiscordLogHook.Commands {
                 { "add <log|status> <url>", "register a webhook url to either log or status" },
                 { "remove <log|status> <url>", "remove a webhook url to either log or status" },
                 { "clear <log|status>", "clear all webhooks from either log or status (disabling it)" },
-                { "test <url>", "send a test message to the provided webhook url to ensure you have a solid connection; must press enter twice" },
+                { "ignore add <text>", "add an item to the ignore list to be treated as INFO rather than WARN or ERR" },
+                { "ignore remove <text>", "remove an item from the ignore list" },
+                { "ignore clear", "clear the ignore list" },
                 { "limit <number>", "adjust the number of previous INFO log entries you include in warning/error webhook messages" },
+                { "test <url>", "send a test message to the provided webhook url to ensure you have a solid connection; must press enter twice" },
             };
 
             int i = 1; int j = 1;
@@ -100,12 +103,38 @@ Description Overview
                                 return;
                         }
                         break;
-                    case "test":
-                        if (_params.Count != 2) {
-                            break;
+                    case "ignore":
+                        switch (_params[1].ToLower()) {
+                            case "add":
+                                if (_params.Count != 3) {
+                                    break;
+                                }
+                                DiscordLogger.Settings.loggerIgnorelist.Add(_params[2]);
+                                SettingsManager.Save(DiscordLogger.Settings);
+                                SdtdConsole.Instance.Output("ignore entry added");
+                                return;
+                            case "remove":
+                                if (_params.Count != 3) {
+                                    break;
+                                }
+                                if (DiscordLogger.Settings.loggerIgnorelist.Remove(_params[2])) {
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    SdtdConsole.Instance.Output("ignore entry removed");
+                                } else {
+                                    SdtdConsole.Instance.Output("could not find an ignore entry matching what you provided");
+                                }
+                                return;
+                            case "clear":
+                                if (DiscordLogger.Settings.loggerIgnorelist.Count > 0) {
+                                    DiscordLogger.Settings.loggerIgnorelist.Clear();
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    SdtdConsole.Instance.Output("ignore list cleared");
+                                } else {
+                                    SdtdConsole.Instance.Output("ignore list was already clear");
+                                }
+                                return;
                         }
-                        ThreadManager.StartCoroutine(DiscordLogger.Send(_params[1], Payload.Info("Test Message").Serialize()));
-                        return;
+                        break;
                     case "limit":
                         if (_params.Count != 2) {
                             break;
@@ -117,6 +146,12 @@ Description Overview
                             return;
                         }
                         break;
+                    case "test":
+                        if (_params.Count != 2) {
+                            break;
+                        }
+                        ThreadManager.StartCoroutine(DiscordLogger.Send(_params[1], Payload.Info("Test Message").Serialize()));
+                        return;
                 }
                 SdtdConsole.Instance.Output($"Invald request; run 'help {Commands[0]}' for more info");
             } catch (Exception e) {
