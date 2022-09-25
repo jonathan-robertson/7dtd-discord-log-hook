@@ -69,17 +69,21 @@ namespace DiscordLogHook.Data {
             }
         }
 
-        public Payload(string message, string trace, List<string> previousLines, int mainColor = 16711807, int historyColor = 32767) {
+        public Payload(string message, string trace, List<string> previousLines, int mainColor = 16711807, int traceColor = 8388863, int historyColor = 32767) {
             if (previousLines != null && previousLines.Count > 0) {
                 var historyPrefix = previousLines.Count == DiscordLogger.Settings.rollingLimit ? "...\n" : "";
-                embeds = new Embed[2] {
+                embeds = new Embed[3] {
                     new Embed() {
                         description = historyPrefix + string.Join("\n", previousLines),
                         color = historyColor
                     },
                     new Embed() {
-                        description = $"{message}\n> {trace}",
+                        description = message,
                         color = mainColor
+                    },
+                    new Embed() {
+                        description = trace,
+                        color = traceColor
                     }
             };
             } else {
@@ -97,7 +101,7 @@ namespace DiscordLogHook.Data {
         }
 
         public static Payload Warn(string message, List<string> previousLines) {
-            return new Payload(message, previousLines);
+            return new Payload(message, previousLines, 16744448);
         }
 
         public static Payload Err(string message, List<string> previousLines) {
@@ -105,7 +109,7 @@ namespace DiscordLogHook.Data {
         }
 
         public static Payload Err(string message, string trace, List<string> previousLines) {
-            return new Payload(message, trace, previousLines);
+            return new Payload(message, trace, previousLines, 16711807);
         }
 
         public string Serialize() {
