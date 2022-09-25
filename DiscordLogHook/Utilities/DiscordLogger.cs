@@ -18,7 +18,7 @@ namespace DiscordLogHook.Utilities {
         private DiscordLogger() { }
 
         internal static void LogCallbackDelegate(string _msg, string _trace, LogType _type) {
-            if (_type == LogType.Log || Settings.loggerIgnorelist.Where(item => _msg.Contains(item)).Any()) {
+            if (_type == LogType.Log || _type == LogType.Warning || Settings.loggerIgnorelist.Where(item => _msg.Contains(item)).Any()) {
                 if (Settings.loggerWebhooks.Count > 0) {
                     RollingQueue.Add(_msg);
                 }
@@ -26,9 +26,11 @@ namespace DiscordLogHook.Utilities {
             }
 
             switch (_type) {
+                /* TODO: allow this to be adjusted on command
                 case LogType.Warning:
                     Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Warn(_msg, RollingQueue.GetLines()).Serialize())));
                     return;
+                */
                 case LogType.Error:
                     Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, RollingQueue.GetLines()).Serialize())));
                     return;
