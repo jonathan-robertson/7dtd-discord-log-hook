@@ -87,10 +87,14 @@ namespace DiscordLogHook.Data {
                     }
             };
             } else {
-                embeds = new Embed[1] {
+                embeds = new Embed[2] {
                     new Embed() {
-                        description = $"{message}\n> {trace}",
+                        description = message,
                         color = mainColor
+                    },
+                    new Embed() {
+                        description = trace,
+                        color = traceColor
                     }
                 };
             }

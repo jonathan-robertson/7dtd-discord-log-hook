@@ -3,7 +3,7 @@
         <Name value="Discord Log Hook" />
         <Description value="Configurable log hook into Discord for game service monitoring" />
         <Author value="Jonathan Robertson (Kanaverum)" />
-        <Version value="0.2.1" />
+        <Version value="0.2.2" />
         <Website value="https://github.com/jonathan-robertson/7dtd-discord-log-hook" />
     </ModInfo>
 </xml>
