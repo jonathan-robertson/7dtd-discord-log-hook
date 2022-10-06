@@ -6,8 +6,8 @@ namespace DiscordLogHook.Utilities {
         public List<string> loggerWebhooks = new List<string>();
         public List<string> loggerIgnorelist = new List<string>();
         public List<string> statusWebhooks = new List<string>();
-        public string messageOnGameAwake = ":recycle: Server starting...\n> *:stopwatch: typically ready for players within 1-2 minutes*";
-        public string messageOnGameStartDone = ":white_check_mark: Server ready to receive players :tada:";
-        public string messageOnGameShutdown = ":stop_button: Server shutting down";
+        public string messageOnGameShutdown = "⏹️ Server stopped";
+        public string messageOnGameAwake = "♻️ Server starting, should be ready for players within a few minutes ⏱️";
+        public string messageOnGameStartDone = "✅ Server ready to receive players 🎉";
     }
 }
