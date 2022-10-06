@@ -33,10 +33,7 @@ namespace DiscordLogHook.Commands {
             };
 
             int i = 1; int j = 1;
-            help = $@"Usage:
-  {string.Join("\n  ", dict.Keys.Select(command => $"{i++}. {GetCommands()[0]} {command}").ToList())}
-Description Overview
-{string.Join("\n", dict.Values.Select(description => $"{j++}. {description}").ToList())}";
+            help = $"Usage:\n  {string.Join("\n  ", dict.Keys.Select(command => $"{i++}. {GetCommands()[0]} {command}").ToList())}\nDescription Overview\n{string.Join("\n", dict.Values.Select(description => $"{j++}. {description}").ToList())}";
         }
 
         public override string[] GetCommands() {
