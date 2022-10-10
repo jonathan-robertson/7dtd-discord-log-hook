@@ -28,6 +28,7 @@ namespace DiscordLogHook.Commands {
                 { "ignore add <text>", "add an item to the ignore list to be treated as INFO rather than WARN or ERR" },
                 { "ignore remove <text>", "remove an item from the ignore list" },
                 { "ignore clear", "clear the ignore list" },
+                { "set message <awake|start|shutdown> <message>", $"set the given server status message; set as \"\" to use default messages...\n  DefaultMessageOnGameShutdown: {Settings.DefaultMessageOnGameShutdown}\n  DefaultMessageOnGameAwake: {Settings.DefaultMessageOnGameAwake}\n  DefaultMessageOnGameStartDone: {Settings.DefaultMessageOnGameStartDone}" },
                 { "limit <number>", "adjust the number of previous INFO log entries you include in warning/error webhook messages" },
                 { "test <url>", "send a test message to the provided webhook url to ensure you have a solid connection; must press enter twice" },
             };
@@ -130,6 +131,27 @@ namespace DiscordLogHook.Commands {
                                     SdtdConsole.Instance.Output("ignore list was already clear");
                                 }
                                 return;
+                        }
+                        break;
+                    case "set message <awake|start|shutdown> <message>":
+                        switch (_params[1].ToLower()) {
+                            case "message":
+                                if (_params.Count != 4) { break; }
+                                switch (_params[2].ToLower()) {
+                                    case "awake":
+                                        DiscordLogger.Settings.messageOnGameAwake = _params[3];
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        break;
+                                    case "start":
+                                        DiscordLogger.Settings.messageOnGameStartDone = _params[3];
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        break;
+                                    case "shutdown":
+                                        DiscordLogger.Settings.messageOnGameShutdown = _params[3];
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        break;
+                                }
+                                break;
                         }
                         break;
                     case "limit":

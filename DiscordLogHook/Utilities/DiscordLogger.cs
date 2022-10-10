@@ -41,15 +41,15 @@ namespace DiscordLogHook.Utilities {
         }
 
         internal static void OnGameAwake() {
-            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.messageOnGameAwake).Serialize())));
+            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForAwake()).Serialize())));
         }
 
         internal static void OnGameStartDone() {
-            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.messageOnGameStartDone).Serialize())));
+            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForStartDone()).Serialize())));
         }
 
         internal static void OnGameShutdown() {
-            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.messageOnGameShutdown).Serialize())));
+            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForShutdown()).Serialize())));
         }
 
         /**
