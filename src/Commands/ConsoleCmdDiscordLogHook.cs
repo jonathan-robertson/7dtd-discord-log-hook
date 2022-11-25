@@ -143,11 +143,13 @@ namespace DiscordLogHook.Commands {
                                     case "warn":
                                         DiscordLogger.Settings.LogLevel = LogType.Warning;
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        break;
+                                        SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Warning}");
+                                        return;
                                     case "err":
                                         DiscordLogger.Settings.LogLevel = LogType.Error;
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        break;
+                                        SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Error}");
+                                        return;
                                 }
                                 break;
                             case "message":
@@ -156,15 +158,18 @@ namespace DiscordLogHook.Commands {
                                     case "awake":
                                         DiscordLogger.Settings.messageOnGameAwake = _params[3];
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        break;
+                                        SdtdConsole.Instance.Output($"successfully updated messageOnGameAwake to {_params[3]}");
+                                        return;
                                     case "start":
                                         DiscordLogger.Settings.messageOnGameStartDone = _params[3];
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        break;
+                                        SdtdConsole.Instance.Output($"successfully updated messageOnGameStartDone to {_params[3]}");
+                                        return;
                                     case "shutdown":
                                         DiscordLogger.Settings.messageOnGameShutdown = _params[3];
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        break;
+                                        SdtdConsole.Instance.Output($"successfully updated messageOnGameShutdown to {_params[3]}");
+                                        return;
                                 }
                                 break;
                         }

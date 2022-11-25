@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - add legible output for settings list
 - add support for log level control in console
+- fix feedback for all set commands
 
 ## [0.3.0] - 2022-10-10
 
