@@ -141,12 +141,12 @@ namespace DiscordLogHook.Commands {
                                 if (_params.Count != 3) { break; }
                                 switch (_params[2].ToLower()) {
                                     case "warn":
-                                        DiscordLogger.Settings.LogLevel = LogType.Warning;
+                                        DiscordLogger.Settings.SetLogLevel(LogType.Warning);
                                         SettingsManager.Save(DiscordLogger.Settings);
                                         SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Warning}");
                                         return;
                                     case "err":
-                                        DiscordLogger.Settings.LogLevel = LogType.Error;
+                                        DiscordLogger.Settings.SetLogLevel(LogType.Error);
                                         SettingsManager.Save(DiscordLogger.Settings);
                                         SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Error}");
                                         return;

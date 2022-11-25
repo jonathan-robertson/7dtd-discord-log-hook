@@ -25,7 +25,7 @@ namespace DiscordLogHook.Utilities {
                 return;
             }
 
-            if (_type > Settings.LogLevel) { return; }
+            if (_type > Settings.GetLogLevel()) { return; }
 
             switch (_type) {
                 case LogType.Warning:
