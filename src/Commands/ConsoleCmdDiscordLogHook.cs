@@ -30,8 +30,8 @@ namespace DiscordLogHook.Commands {
                 { "ignore remove <text>", "remove an item from the ignore list" },
                 { "ignore clear", "clear the ignore list" },
                 { "set level <WARN|ERR>", "set the log level limit you want to include messages for. For example, choosing WARN will include both WARN and ERR messages" },
+                { "set limit <number>", "adjust the size of the rolling log entry cache for previous higher-level log entries you include in alerts. In other words: when an alert fires, how many of the message before that alerting message do you want to have included?" },
                 { "set message <awake|start|shutdown> <message>", $"set the given server status message; set as \"\" to use default messages...\n  DefaultMessageOnGameShutdown: {Settings.DefaultMessageOnGameShutdown}\n  DefaultMessageOnGameAwake: {Settings.DefaultMessageOnGameAwake}\n  DefaultMessageOnGameStartDone: {Settings.DefaultMessageOnGameStartDone}" },
-                { "limit <number>", "adjust the number of previous INFO log entries you include in warning/error webhook messages" },
                 { "test <url>", "send a test message to the provided webhook url to ensure you have a solid connection; must press enter twice" },
             };
 
@@ -152,6 +152,18 @@ namespace DiscordLogHook.Commands {
                                         return;
                                 }
                                 break;
+                            case "limit":
+                                if (_params.Count != 3) {
+                                    break;
+                                }
+                                if (int.TryParse(_params[2], out var limit)) {
+                                    DiscordLogger.Settings.rollingLimit = limit;
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    DiscordLogger.RollingQueue.UpdateLimit(limit);
+                                    SdtdConsole.Instance.Output($"successfully updated log limit to {limit}");
+                                    return;
+                                }
+                                break;
                             case "message":
                                 if (_params.Count != 4) { break; }
                                 switch (_params[2].ToLower()) {
@@ -172,17 +184,6 @@ namespace DiscordLogHook.Commands {
                                         return;
                                 }
                                 break;
-                        }
-                        break;
-                    case "limit":
-                        if (_params.Count != 2) {
-                            break;
-                        }
-                        if (int.TryParse(_params[1], out var limit)) {
-                            DiscordLogger.Settings.rollingLimit = limit;
-                            SettingsManager.Save(DiscordLogger.Settings);
-                            DiscordLogger.RollingQueue.UpdateLimit(limit);
-                            return;
                         }
                         break;
                     case "test":
