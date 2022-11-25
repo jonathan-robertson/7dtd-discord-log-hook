@@ -18,15 +18,8 @@ jobs:
       - name: 📦 Package data
         run: |
           # Edit this line if you want to include additional files
-          # q stands for quiet
-          mkdir package
-          cp CHANGELOG.md package
-          cp LICENSE package
-          cp ModInfo.xml package
-          cp README.md package
-          cp -r LatestReleaseBuild/* package
-          cd package
-          zip -qr "../${{ github.event.repository.name }}.zip" *
+          # q stands for quiet, r stands for recursive (to include all files and sub-folders in Config)
+          zip -qr "${{ github.event.repository.name }}.zip" *.dll ModInfo.xml README.md CHANGELOG.md LICENSE
 
           version=$(sed -n '/Version/{s/.*<Version value=\"\(.*\)\"[ ]*\/>.*/\1/;p}' ModInfo.xml)
           echo "version=$version" >> $GITHUB_ENV
