@@ -1,7 +1,7 @@
 ﻿using DiscordLogHook.Utilities;
 
 namespace DiscordLogHook {
-    public class API : IModApi {
+    public class ModApi : IModApi {
         public void InitMod(Mod _modInstance) {
             DiscordLogger.Init();
             Log.LogCallbacks += DiscordLogger.LogCallbackDelegate;

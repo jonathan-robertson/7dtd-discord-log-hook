@@ -25,12 +25,12 @@ namespace DiscordLogHook.Utilities {
                 return;
             }
 
+            if (_type > Settings.GetLogLevel()) { return; }
+
             switch (_type) {
-                /* TODO: allow this to be adjusted on command
                 case LogType.Warning:
                     Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Warn(_msg, RollingQueue.GetLines()).Serialize())));
                     return;
-                */
                 case LogType.Error:
                     Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, RollingQueue.GetLines()).Serialize())));
                     return;
