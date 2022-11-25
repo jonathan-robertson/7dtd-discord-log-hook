@@ -3,6 +3,7 @@ using DiscordLogHook.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace DiscordLogHook.Commands {
     internal class ConsoleCmdDiscordLogHook : ConsoleCmdAbstract {
@@ -28,6 +29,7 @@ namespace DiscordLogHook.Commands {
                 { "ignore add <text>", "add an item to the ignore list to be treated as INFO rather than WARN or ERR" },
                 { "ignore remove <text>", "remove an item from the ignore list" },
                 { "ignore clear", "clear the ignore list" },
+                { "set level <WARN|ERR>", "set the log level limit you want to include messages for. For example, choosing WARN will include both WARN and ERR messages" },
                 { "set message <awake|start|shutdown> <message>", $"set the given server status message; set as \"\" to use default messages...\n  DefaultMessageOnGameShutdown: {Settings.DefaultMessageOnGameShutdown}\n  DefaultMessageOnGameAwake: {Settings.DefaultMessageOnGameAwake}\n  DefaultMessageOnGameStartDone: {Settings.DefaultMessageOnGameStartDone}" },
                 { "limit <number>", "adjust the number of previous INFO log entries you include in warning/error webhook messages" },
                 { "test <url>", "send a test message to the provided webhook url to ensure you have a solid connection; must press enter twice" },
@@ -133,8 +135,21 @@ namespace DiscordLogHook.Commands {
                                 return;
                         }
                         break;
-                    case "set message <awake|start|shutdown> <message>":
+                    case "set":
                         switch (_params[1].ToLower()) {
+                            case "level":
+                                if (_params.Count != 3) { break; }
+                                switch (_params[2].ToLower()) {
+                                    case "warn":
+                                        DiscordLogger.Settings.LogLevel = LogType.Warning;
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        break;
+                                    case "err":
+                                        DiscordLogger.Settings.LogLevel = LogType.Error;
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        break;
+                                }
+                                break;
                             case "message":
                                 if (_params.Count != 4) { break; }
                                 switch (_params[2].ToLower()) {

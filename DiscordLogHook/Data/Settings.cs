@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace DiscordLogHook.Utilities {
     internal class Settings {
@@ -7,6 +8,7 @@ namespace DiscordLogHook.Utilities {
         public static readonly string DefaultMessageOnGameStartDone = "✅ Server ready to receive players 🎉";
 
         public int rollingLimit = 10;
+        public LogType LogLevel { get; internal set; } = LogType.Warning;
         public List<string> loggerWebhooks = new List<string>();
         public List<string> loggerIgnorelist = new List<string>();
         public List<string> statusWebhooks = new List<string>();
