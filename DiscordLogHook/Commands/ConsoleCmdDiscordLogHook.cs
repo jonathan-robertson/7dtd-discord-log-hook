@@ -54,7 +54,7 @@ namespace DiscordLogHook.Commands {
         public override void Execute(List<string> _params, CommandSenderInfo _senderInfo) {
             try {
                 if (_params.Count == 0) {
-                    SdtdConsole.Instance.Output($"= Settings =\n{Json<Settings>.Serialize(DiscordLogger.Settings)}");
+                    SdtdConsole.Instance.Output(DiscordLogger.Settings.ToString());
                     return;
                 }
                 switch (_params[0].ToLower()) {

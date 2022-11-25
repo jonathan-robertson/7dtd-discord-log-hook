@@ -33,5 +33,24 @@ namespace DiscordLogHook.Utilities {
                 ? DefaultMessageOnGameStartDone
                 : messageOnGameStartDone;
         }
+
+        public override string ToString() {
+            string noEntries = "[no entries]";
+            string loggerWebhookString = $"\n\t- {string.Join("\n\t- ", loggerWebhooks)}";
+            string statusWebhookString = $"\n\t- {string.Join("\n\t- ", statusWebhooks)}";
+            string loggerIgnoreString = $"\n\t- {string.Join("\n\t- ", loggerIgnorelist)}";
+
+            return $@"Status Settings
+- status urls: {(statusWebhooks.Count > 0 ? statusWebhookString : noEntries)}
+- shutdown message: {(messageOnGameShutdown.Length > 0 ? messageOnGameShutdown : DefaultMessageOnGameShutdown)}
+- awake message: {(messageOnGameAwake.Length > 0 ? messageOnGameAwake : DefaultMessageOnGameAwake)}
+- ready message: {(messageOnGameStartDone.Length > 0 ? messageOnGameStartDone : DefaultMessageOnGameStartDone)}
+
+Logger Settings
+- log level: {LogLevel}
+- log limit: {rollingLimit}
+- logger urls: {(loggerWebhooks.Count > 0 ? loggerWebhookString : noEntries)}
+- ignore list: {(loggerIgnorelist.Count > 0 ? loggerIgnoreString : noEntries)}";
+        }
     }
 }
