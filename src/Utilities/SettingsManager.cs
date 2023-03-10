@@ -5,7 +5,7 @@ namespace DiscordLogHook.Utilities
 {
     internal class SettingsManager
     {
-        private static readonly ModLog log = new ModLog(typeof(Settings));
+        private static readonly ModLog<SettingsManager> log = new ModLog<SettingsManager>();
         private static readonly string filename = Path.Combine(GameIO.GetSaveGameDir(), "discord-log-hook.json");
 
         internal static Settings Load()

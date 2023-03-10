@@ -9,7 +9,7 @@ namespace DiscordLogHook.Utilities
 {
     internal class DiscordLogger
     {
-        internal static Settings Settings { get; private set; }
+        public static Settings Settings { get; private set; }
         internal static RollingQueue RollingQueue { get; private set; }
 
         internal static void Init()
@@ -49,17 +49,17 @@ namespace DiscordLogHook.Utilities
 
         internal static void OnGameAwake()
         {
-            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForAwake()).Serialize())));
+            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForAwake()).Serialize())));
         }
 
-        internal static void OnGameStartDone()
+        internal static void OnGameStartTrulyDone()
         {
-            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForStartDone()).Serialize())));
+            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForStartDone()).Serialize())));
         }
 
         internal static void OnGameShutdown()
         {
-            Settings.statusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForShutdown()).Serialize())));
+            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForShutdown()).Serialize())));
         }
 
         /**

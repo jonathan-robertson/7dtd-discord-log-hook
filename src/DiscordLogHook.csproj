@@ -65,6 +65,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Patches\ModEvent_Patches.cs" />
     <Compile Include="ModApi.cs" />
     <Compile Include="Commands\ConsoleCmdDiscordLogHook.cs" />
     <Compile Include="Data\AllowedMentions.cs" />

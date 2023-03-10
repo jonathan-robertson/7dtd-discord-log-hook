@@ -2,44 +2,55 @@
 
 namespace DiscordLogHook.Utilities
 {
-    internal class ModLog
+    internal class ModLog<T>
     {
-        private readonly string className;
+        private readonly string _className;
 
-        public ModLog(Type classType)
+        public ModLog()
         {
-            className = classType.FullName;
+            _className = typeof(T).FullName;
         }
 
         public void Trace(string message)
         {
-            Log.Out($"[{className}] TRACE: {message}");
+            if (ModApi.DebugMode)
+            {
+                Log.Out($"[{_className}] TRACE: {message}");
+            }
         }
 
         public void Debug(string message)
         {
-            Log.Out($"[{className}] DEBUG: {message}");
+            if (ModApi.DebugMode)
+            {
+                Log.Out($"[{_className}] DEBUG: {message}");
+            }
         }
 
         public void Info(string message)
         {
-            Log.Out($"[{className}] {message}");
+            Log.Out($"[{_className}] {message}");
         }
 
         public void Warn(string message, Exception e = null)
         {
-            Log.Warning($"[{className}] {message}");
+            Log.Warning($"[{_className}] {message}");
             if (e != null)
             {
+                Log.Warning($"[{_className}] {message}\n{e.Message}\n{e.StackTrace}");
                 Log.Exception(e);
             }
         }
 
         public void Error(string message, Exception e = null)
         {
-            Log.Error($"[{className}] {message}");
-            if (e != null)
+            if (e == null)
             {
+                Log.Error($"[{_className}] {message}");
+            }
+            else
+            {
+                Log.Error($"[{_className}] {message}\n{e.Message}\n{e.StackTrace}");
                 Log.Exception(e);
             }
         }

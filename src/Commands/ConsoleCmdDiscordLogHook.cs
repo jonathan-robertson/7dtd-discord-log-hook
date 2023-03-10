@@ -80,7 +80,7 @@ namespace DiscordLogHook.Commands
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                             case "status":
-                                DiscordLogger.Settings.statusWebhooks.Add(_params[2]);
+                                DiscordLogger.Settings.StatusWebhooks.Add(_params[2]);
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                         }
@@ -97,7 +97,7 @@ namespace DiscordLogHook.Commands
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                             case "status":
-                                _ = DiscordLogger.Settings.statusWebhooks.Remove(_params[2]);
+                                _ = DiscordLogger.Settings.StatusWebhooks.Remove(_params[2]);
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                         }
@@ -114,7 +114,7 @@ namespace DiscordLogHook.Commands
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                             case "status":
-                                DiscordLogger.Settings.statusWebhooks.Clear();
+                                DiscordLogger.Settings.StatusWebhooks.Clear();
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                         }

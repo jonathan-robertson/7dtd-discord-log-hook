@@ -13,7 +13,7 @@ namespace DiscordLogHook.Utilities
         public int logLevel = (int)LogType.Warning;
         public List<string> loggerWebhooks = new List<string>();
         public List<string> loggerIgnorelist = new List<string>();
-        public List<string> statusWebhooks = new List<string>();
+        public List<string> StatusWebhooks { get; private set; } = new List<string>();
         public string messageOnGameShutdown = "";
         public string messageOnGameAwake = "";
         public string messageOnGameStartDone = "";
@@ -53,11 +53,11 @@ namespace DiscordLogHook.Utilities
         {
             var noEntries = "[no entries]";
             var loggerWebhookString = $"\n\t- {string.Join("\n\t- ", loggerWebhooks)}";
-            var statusWebhookString = $"\n\t- {string.Join("\n\t- ", statusWebhooks)}";
+            var statusWebhookString = $"\n\t- {string.Join("\n\t- ", StatusWebhooks)}";
             var loggerIgnoreString = $"\n\t- {string.Join("\n\t- ", loggerIgnorelist)}";
 
             return $@"Status Settings
-- status urls: {(statusWebhooks.Count > 0 ? statusWebhookString : noEntries)}
+- status urls: {(StatusWebhooks.Count > 0 ? statusWebhookString : noEntries)}
 - shutdown message: {(messageOnGameShutdown.Length > 0 ? messageOnGameShutdown : DefaultMessageOnGameShutdown)}
 - awake message: {(messageOnGameAwake.Length > 0 ? messageOnGameAwake : DefaultMessageOnGameAwake)}
 - ready message: {(messageOnGameStartDone.Length > 0 ? messageOnGameStartDone : DefaultMessageOnGameStartDone)}
