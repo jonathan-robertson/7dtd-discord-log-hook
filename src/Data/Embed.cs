@@ -1,5 +1,7 @@
-﻿namespace DiscordLogHook.Data {
-    internal class Embed {
+﻿namespace DiscordLogHook.Data
+{
+    internal class Embed
+    {
         public string title;
         public string type;
         public string description;
@@ -15,46 +17,53 @@
         public EmbedField[] fields;
     }
 
-    internal class EmbedFooter {
+    internal class EmbedFooter
+    {
         public string test;
         public string icon_url;
         public string proxy_icon_url;
     }
 
-    internal class EmbedImage {
+    internal class EmbedImage
+    {
         public string url;
         public string proxy_url;
         public int height;
         public int width;
     }
 
-    internal class EmbedThumbnail {
+    internal class EmbedThumbnail
+    {
         public string url;
         public string proxy_url;
         public int height;
         public int width;
     }
 
-    internal class EmbedVideo {
+    internal class EmbedVideo
+    {
         public string url;
         public string proxy_url;
         public int height;
         public int width;
     }
 
-    internal class EmbedProvider {
+    internal class EmbedProvider
+    {
         public string name;
         public string url;
     }
 
-    internal class EmbedAuthor {
+    internal class EmbedAuthor
+    {
         public string name;
         public string url;
         public string icon_url;
         public string proxy_icon_url;
     }
 
-    internal class EmbedField {
+    internal class EmbedField
+    {
         public string name;
         public string value;
         public bool inline;

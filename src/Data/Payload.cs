@@ -1,8 +1,10 @@
 ﻿using DiscordLogHook.Utilities;
 using System.Collections.Generic;
 
-namespace DiscordLogHook.Data {
-    internal class Payload {
+namespace DiscordLogHook.Data
+{
+    internal class Payload
+    {
         /**
          * <summary>the message contents (up to 2000 characters)</summary>
          */
@@ -46,8 +48,10 @@ namespace DiscordLogHook.Data {
 
         public Payload() { }
 
-        public Payload(string message, List<string> previousLines, int mainColor = 16744448, int historyColor = 32767) {
-            if (previousLines != null && previousLines.Count > 0) {
+        public Payload(string message, List<string> previousLines, int mainColor = 16744448, int historyColor = 32767)
+        {
+            if (previousLines != null && previousLines.Count > 0)
+            {
                 var historyPrefix = previousLines.Count == DiscordLogger.Settings.rollingLimit ? "...\n" : "";
                 embeds = new Embed[2] {
                     new Embed() {
@@ -59,7 +63,9 @@ namespace DiscordLogHook.Data {
                         color = mainColor
                     }
                 };
-            } else {
+            }
+            else
+            {
                 embeds = new Embed[1]{
                     new Embed() {
                         description = message,
@@ -69,8 +75,10 @@ namespace DiscordLogHook.Data {
             }
         }
 
-        public Payload(string message, string trace, List<string> previousLines, int mainColor = 16711807, int traceColor = 8388863, int historyColor = 32767) {
-            if (previousLines != null && previousLines.Count > 0) {
+        public Payload(string message, string trace, List<string> previousLines, int mainColor = 16711807, int traceColor = 8388863, int historyColor = 32767)
+        {
+            if (previousLines != null && previousLines.Count > 0)
+            {
                 var historyPrefix = previousLines.Count == DiscordLogger.Settings.rollingLimit ? "...\n" : "";
                 embeds = new Embed[3] {
                     new Embed() {
@@ -86,7 +94,9 @@ namespace DiscordLogHook.Data {
                         color = traceColor
                     }
             };
-            } else {
+            }
+            else
+            {
                 embeds = new Embed[2] {
                     new Embed() {
                         description = message,
@@ -100,23 +110,28 @@ namespace DiscordLogHook.Data {
             }
         }
 
-        public static Payload Info(string message) {
+        public static Payload Info(string message)
+        {
             return new Payload(message, null, 32767);
         }
 
-        public static Payload Warn(string message, List<string> previousLines) {
+        public static Payload Warn(string message, List<string> previousLines)
+        {
             return new Payload(message, previousLines, 16744448);
         }
 
-        public static Payload Err(string message, List<string> previousLines) {
+        public static Payload Err(string message, List<string> previousLines)
+        {
             return new Payload(message, previousLines, 16711807);
         }
 
-        public static Payload Err(string message, string trace, List<string> previousLines) {
+        public static Payload Err(string message, string trace, List<string> previousLines)
+        {
             return new Payload(message, trace, previousLines, 16711807);
         }
 
-        public string Serialize() {
+        public string Serialize()
+        {
             return Json<Payload>.Serialize(this);
         }
     }

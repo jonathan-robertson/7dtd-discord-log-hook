@@ -1,8 +1,11 @@
 ﻿using DiscordLogHook.Utilities;
 
-namespace DiscordLogHook {
-    public class ModApi : IModApi {
-        public void InitMod(Mod _modInstance) {
+namespace DiscordLogHook
+{
+    public class ModApi : IModApi
+    {
+        public void InitMod(Mod _modInstance)
+        {
             DiscordLogger.Init();
             Log.LogCallbacks += DiscordLogger.LogCallbackDelegate;
             ModEvents.GameAwake.RegisterHandler(DiscordLogger.OnGameAwake);

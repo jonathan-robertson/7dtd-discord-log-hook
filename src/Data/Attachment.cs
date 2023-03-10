@@ -1,4 +1,6 @@
-﻿namespace DiscordLogHook.Data {
-    internal class Attachment {
+﻿namespace DiscordLogHook.Data
+{
+    internal class Attachment
+    {
     }
 }
