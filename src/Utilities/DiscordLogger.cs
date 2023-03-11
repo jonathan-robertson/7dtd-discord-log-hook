@@ -50,6 +50,9 @@ namespace DiscordLogHook.Utilities
         internal static void OnGameAwake()
         {
             Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForAwake()).Serialize())));
+
+            // Note: Register here instead of in InitMod to ensure this is the final handler registered to the GameStartDone delegate
+            ModEvents.GameStartDone.RegisterHandler(OnGameStartTrulyDone);
         }
 
         internal static void OnGameStartTrulyDone()
