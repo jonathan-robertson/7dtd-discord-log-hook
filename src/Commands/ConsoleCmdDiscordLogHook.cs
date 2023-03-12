@@ -76,7 +76,7 @@ namespace DiscordLogHook.Commands
                         switch (_params[1].ToLower())
                         {
                             case "log":
-                                DiscordLogger.Settings.loggerWebhooks.Add(_params[2]);
+                                DiscordLogger.Settings.LoggerWebhooks.Add(_params[2]);
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                             case "status":
@@ -93,7 +93,7 @@ namespace DiscordLogHook.Commands
                         switch (_params[1].ToLower())
                         {
                             case "log":
-                                _ = DiscordLogger.Settings.loggerWebhooks.Remove(_params[2]);
+                                _ = DiscordLogger.Settings.LoggerWebhooks.Remove(_params[2]);
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                             case "status":
@@ -110,7 +110,7 @@ namespace DiscordLogHook.Commands
                         switch (_params[1].ToLower())
                         {
                             case "log":
-                                DiscordLogger.Settings.loggerWebhooks.Clear();
+                                DiscordLogger.Settings.LoggerWebhooks.Clear();
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 return;
                             case "status":
@@ -127,7 +127,7 @@ namespace DiscordLogHook.Commands
                                 {
                                     break;
                                 }
-                                DiscordLogger.Settings.loggerIgnorelist.Add(_params[2]);
+                                DiscordLogger.Settings.LoggerIgnorelist.Add(_params[2]);
                                 SettingsManager.Save(DiscordLogger.Settings);
                                 SdtdConsole.Instance.Output("ignore entry added");
                                 return;
@@ -136,7 +136,7 @@ namespace DiscordLogHook.Commands
                                 {
                                     break;
                                 }
-                                if (DiscordLogger.Settings.loggerIgnorelist.Remove(_params[2]))
+                                if (DiscordLogger.Settings.LoggerIgnorelist.Remove(_params[2]))
                                 {
                                     SettingsManager.Save(DiscordLogger.Settings);
                                     SdtdConsole.Instance.Output("ignore entry removed");
@@ -147,9 +147,9 @@ namespace DiscordLogHook.Commands
                                 }
                                 return;
                             case "clear":
-                                if (DiscordLogger.Settings.loggerIgnorelist.Count > 0)
+                                if (DiscordLogger.Settings.LoggerIgnorelist.Count > 0)
                                 {
-                                    DiscordLogger.Settings.loggerIgnorelist.Clear();
+                                    DiscordLogger.Settings.LoggerIgnorelist.Clear();
                                     SettingsManager.Save(DiscordLogger.Settings);
                                     SdtdConsole.Instance.Output("ignore list cleared");
                                 }
@@ -186,7 +186,7 @@ namespace DiscordLogHook.Commands
                                 }
                                 if (int.TryParse(_params[2], out var limit))
                                 {
-                                    DiscordLogger.Settings.rollingLimit = limit;
+                                    DiscordLogger.Settings.RollingLimit = limit;
                                     SettingsManager.Save(DiscordLogger.Settings);
                                     DiscordLogger.RollingQueue.UpdateLimit(limit);
                                     SdtdConsole.Instance.Output($"successfully updated log limit to {limit}");
@@ -198,19 +198,19 @@ namespace DiscordLogHook.Commands
                                 switch (_params[2].ToLower())
                                 {
                                     case "awake":
-                                        DiscordLogger.Settings.messageOnGameAwake = _params[3];
+                                        DiscordLogger.Settings.MessageOnGameAwake = _params[3];
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated messageOnGameAwake to {_params[3]}");
+                                        SdtdConsole.Instance.Output($"successfully updated MessageOnGameAwake to {_params[3]}");
                                         return;
                                     case "start":
-                                        DiscordLogger.Settings.messageOnGameStartDone = _params[3];
+                                        DiscordLogger.Settings.MessageOnGameStartDone = _params[3];
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated messageOnGameStartDone to {_params[3]}");
+                                        SdtdConsole.Instance.Output($"successfully updated MessageOnGameStartDone to {_params[3]}");
                                         return;
                                     case "shutdown":
-                                        DiscordLogger.Settings.messageOnGameShutdown = _params[3];
+                                        DiscordLogger.Settings.MessageOnGameShutdown = _params[3];
                                         SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated messageOnGameShutdown to {_params[3]}");
+                                        SdtdConsole.Instance.Output($"successfully updated MessageOnGameShutdown to {_params[3]}");
                                         return;
                                 }
                                 break;

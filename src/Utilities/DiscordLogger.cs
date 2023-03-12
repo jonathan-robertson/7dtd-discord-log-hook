@@ -15,16 +15,16 @@ namespace DiscordLogHook.Utilities
         internal static void Init()
         {
             Settings = SettingsManager.Load();
-            RollingQueue = new RollingQueue(Settings.rollingLimit);
+            RollingQueue = new RollingQueue(Settings.RollingLimit);
         }
 
         private DiscordLogger() { }
 
         internal static void LogCallbackDelegate(string _msg, string _trace, LogType _type)
         {
-            if (_type == LogType.Log || _type == LogType.Warning || Settings.loggerIgnorelist.Where(item => _msg.Contains(item)).Any())
+            if (_type == LogType.Log || _type == LogType.Warning || Settings.LoggerIgnorelist.Where(item => _msg.Contains(item)).Any())
             {
-                if (Settings.loggerWebhooks.Count > 0)
+                if (Settings.LoggerWebhooks.Count > 0)
                 {
                     RollingQueue.Add(_msg);
                 }
@@ -36,13 +36,13 @@ namespace DiscordLogHook.Utilities
             switch (_type)
             {
                 case LogType.Warning:
-                    Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Warn(_msg, RollingQueue.GetLines()).Serialize())));
+                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Warn(_msg, RollingQueue.GetLines()).Serialize())));
                     return;
                 case LogType.Error:
-                    Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, RollingQueue.GetLines()).Serialize())));
+                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, RollingQueue.GetLines()).Serialize())));
                     return;
                 case LogType.Exception:
-                    Settings.loggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, _trace, RollingQueue.GetLines()).Serialize())));
+                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, _trace, RollingQueue.GetLines()).Serialize())));
                     return;
             }
         }

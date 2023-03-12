@@ -1,72 +1,72 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace DiscordLogHook.Utilities
+namespace DiscordLogHook.Data
 {
-    internal class Settings
+    public class Settings
     {
         public static readonly string DefaultMessageOnGameShutdown = "⏹️ Server stopped";
         public static readonly string DefaultMessageOnGameAwake = "♻️ Server starting, should be ready for players within a few minutes ⏱️";
         public static readonly string DefaultMessageOnGameStartDone = "✅ Server ready to receive players 🎉";
 
-        public int rollingLimit = 10;
-        public int logLevel = (int)LogType.Warning;
-        public List<string> loggerWebhooks = new List<string>();
-        public List<string> loggerIgnorelist = new List<string>();
-        public List<string> StatusWebhooks { get; private set; } = new List<string>();
-        public string messageOnGameShutdown = "";
-        public string messageOnGameAwake = "";
-        public string messageOnGameStartDone = "";
+        public int RollingLimit { get; set; } = 10;
+        public int LogLevel { get; set; } = (int)LogType.Warning;
+        public List<string> LoggerWebhooks { get; set; } = new List<string>();
+        public List<string> LoggerIgnorelist { get; set; } = new List<string>();
+        public List<string> StatusWebhooks { get; set; } = new List<string>();
+        public string MessageOnGameShutdown { get; set; } = "";
+        public string MessageOnGameAwake { get; set; } = "";
+        public string MessageOnGameStartDone { get; set; } = "";
 
         public LogType GetLogLevel()
         {
-            return (LogType)logLevel;
+            return (LogType)LogLevel;
         }
 
         public void SetLogLevel(LogType logType)
         {
-            logLevel = (int)logType;
+            LogLevel = (int)logType;
         }
 
         public string GetMessageForShutdown()
         {
-            return string.IsNullOrEmpty(messageOnGameShutdown)
+            return string.IsNullOrEmpty(MessageOnGameShutdown)
                 ? DefaultMessageOnGameShutdown
-                : messageOnGameShutdown;
+                : MessageOnGameShutdown;
         }
 
         public string GetMessageForAwake()
         {
-            return string.IsNullOrEmpty(messageOnGameAwake)
+            return string.IsNullOrEmpty(MessageOnGameAwake)
                 ? DefaultMessageOnGameAwake
-                : messageOnGameAwake;
+                : MessageOnGameAwake;
         }
 
         public string GetMessageForStartDone()
         {
-            return string.IsNullOrEmpty(messageOnGameStartDone)
+            return string.IsNullOrEmpty(MessageOnGameStartDone)
                 ? DefaultMessageOnGameStartDone
-                : messageOnGameStartDone;
+                : MessageOnGameStartDone;
         }
 
         public override string ToString()
         {
             var noEntries = "[no entries]";
-            var loggerWebhookString = $"\n\t- {string.Join("\n\t- ", loggerWebhooks)}";
+            var loggerWebhookString = $"\n\t- {string.Join("\n\t- ", LoggerWebhooks)}";
             var statusWebhookString = $"\n\t- {string.Join("\n\t- ", StatusWebhooks)}";
-            var loggerIgnoreString = $"\n\t- {string.Join("\n\t- ", loggerIgnorelist)}";
+            var loggerIgnoreString = $"\n\t- {string.Join("\n\t- ", LoggerIgnorelist)}";
 
             return $@"Status Settings
 - status urls: {(StatusWebhooks.Count > 0 ? statusWebhookString : noEntries)}
-- shutdown message: {(messageOnGameShutdown.Length > 0 ? messageOnGameShutdown : DefaultMessageOnGameShutdown)}
-- awake message: {(messageOnGameAwake.Length > 0 ? messageOnGameAwake : DefaultMessageOnGameAwake)}
-- ready message: {(messageOnGameStartDone.Length > 0 ? messageOnGameStartDone : DefaultMessageOnGameStartDone)}
+- shutdown message: {(MessageOnGameShutdown.Length > 0 ? MessageOnGameShutdown : DefaultMessageOnGameShutdown)}
+- awake message: {(MessageOnGameAwake.Length > 0 ? MessageOnGameAwake : DefaultMessageOnGameAwake)}
+- ready message: {(MessageOnGameStartDone.Length > 0 ? MessageOnGameStartDone : DefaultMessageOnGameStartDone)}
 
 Logger Settings
 - log level: {GetLogLevel()}
-- log limit: {rollingLimit}
-- logger urls: {(loggerWebhooks.Count > 0 ? loggerWebhookString : noEntries)}
-- ignore list: {(loggerIgnorelist.Count > 0 ? loggerIgnoreString : noEntries)}";
+- log limit: {RollingLimit}
+- logger urls: {(LoggerWebhooks.Count > 0 ? loggerWebhookString : noEntries)}
+- ignore list: {(LoggerIgnorelist.Count > 0 ? loggerIgnoreString : noEntries)}";
         }
     }
 }
