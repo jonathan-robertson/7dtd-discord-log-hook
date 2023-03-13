@@ -52,7 +52,7 @@ namespace DiscordLogHook.Data
         {
             if (previousLines != null && previousLines.Count > 0)
             {
-                var historyPrefix = previousLines.Count == DiscordLogger.Settings.rollingLimit ? "...\n" : "";
+                var historyPrefix = previousLines.Count == DiscordLogger.Settings.RollingLimit ? "...\n" : "";
                 embeds = new Embed[2] {
                     new Embed() {
                         description = historyPrefix + string.Join("\n", previousLines),
@@ -79,7 +79,7 @@ namespace DiscordLogHook.Data
         {
             if (previousLines != null && previousLines.Count > 0)
             {
-                var historyPrefix = previousLines.Count == DiscordLogger.Settings.rollingLimit ? "...\n" : "";
+                var historyPrefix = previousLines.Count == DiscordLogger.Settings.RollingLimit ? "...\n" : "";
                 embeds = new Embed[3] {
                     new Embed() {
                         description = historyPrefix + string.Join("\n", previousLines),

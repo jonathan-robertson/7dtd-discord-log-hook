@@ -1,6 +1,6 @@
 ﻿namespace DiscordLogHook.Utilities
 {
-    internal class Json<T>
+    public class Json<T>
     {
         public static string Serialize(T data)
         {

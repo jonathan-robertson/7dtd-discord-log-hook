@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DiscordLogHook.Data;
+using System;
 using System.IO;
 
 namespace DiscordLogHook.Utilities
