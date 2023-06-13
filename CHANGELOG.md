@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - ?
 
 - update null console param to 'settings'
+- update readme, finally
 - update to a21 modinfo file format
 
 ## [0.6.0] - 2023-03-12
