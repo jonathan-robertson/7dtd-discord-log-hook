@@ -42,12 +42,12 @@ namespace DiscordLogHook.Commands
             help = $"Usage:\n  {string.Join("\n  ", dict.Keys.Select(command => $"{i++}. {GetCommands()[0]} {command}").ToList())}\nDescription Overview\n{string.Join("\n", dict.Values.Select(description => $"{j++}. {description}").ToList())}";
         }
 
-        public override string[] GetCommands()
+        protected override string[] getCommands()
         {
             return Commands;
         }
 
-        public override string GetDescription()
+        protected override string getDescription()
         {
             return "Configure or adjust settings for your Discord Log Hook.";
         }
