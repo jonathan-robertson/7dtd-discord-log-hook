@@ -25,7 +25,7 @@ namespace DiscordLogHook.Commands
              * adjust rolling inf limit
              */
             var dict = new Dictionary<string, string>() {
-                { "", "show current settings" },
+                { "settings", "show current settings" },
                 { "add <log|status> <url>", "register a webhook url to either log or status" },
                 { "remove <log|status> <url>", "remove a webhook url to either log or status" },
                 { "clear <log|status>", "clear all webhooks from either log or status (disabling it)" },
@@ -61,168 +61,169 @@ namespace DiscordLogHook.Commands
         {
             try
             {
-                if (_params.Count == 0)
+                if (_params.Count > 0)
                 {
-                    SdtdConsole.Instance.Output(DiscordLogger.Settings.ToString());
-                    return;
-                }
-                switch (_params[0].ToLower())
-                {
-                    case "add":
-                        if (_params.Count != 3)
-                        {
-                            break;
-                        }
-                        switch (_params[1].ToLower())
-                        {
-                            case "log":
-                                DiscordLogger.Settings.LoggerWebhooks.Add(_params[2]);
-                                SettingsManager.Save(DiscordLogger.Settings);
-                                return;
-                            case "status":
-                                DiscordLogger.Settings.StatusWebhooks.Add(_params[2]);
-                                SettingsManager.Save(DiscordLogger.Settings);
-                                return;
-                        }
-                        break;
-                    case "remove":
-                        if (_params.Count != 3)
-                        {
-                            break;
-                        }
-                        switch (_params[1].ToLower())
-                        {
-                            case "log":
-                                _ = DiscordLogger.Settings.LoggerWebhooks.Remove(_params[2]);
-                                SettingsManager.Save(DiscordLogger.Settings);
-                                return;
-                            case "status":
-                                _ = DiscordLogger.Settings.StatusWebhooks.Remove(_params[2]);
-                                SettingsManager.Save(DiscordLogger.Settings);
-                                return;
-                        }
-                        break;
-                    case "clear":
-                        if (_params.Count != 2)
-                        {
-                            break;
-                        }
-                        switch (_params[1].ToLower())
-                        {
-                            case "log":
-                                DiscordLogger.Settings.LoggerWebhooks.Clear();
-                                SettingsManager.Save(DiscordLogger.Settings);
-                                return;
-                            case "status":
-                                DiscordLogger.Settings.StatusWebhooks.Clear();
-                                SettingsManager.Save(DiscordLogger.Settings);
-                                return;
-                        }
-                        break;
-                    case "ignore":
-                        switch (_params[1].ToLower())
-                        {
-                            case "add":
-                                if (_params.Count != 3)
-                                {
-                                    break;
-                                }
-                                DiscordLogger.Settings.LoggerIgnorelist.Add(_params[2]);
-                                SettingsManager.Save(DiscordLogger.Settings);
-                                SdtdConsole.Instance.Output("ignore entry added");
-                                return;
-                            case "remove":
-                                if (_params.Count != 3)
-                                {
-                                    break;
-                                }
-                                if (DiscordLogger.Settings.LoggerIgnorelist.Remove(_params[2]))
-                                {
-                                    SettingsManager.Save(DiscordLogger.Settings);
-                                    SdtdConsole.Instance.Output("ignore entry removed");
-                                }
-                                else
-                                {
-                                    SdtdConsole.Instance.Output("could not find an ignore entry matching what you provided");
-                                }
-                                return;
-                            case "clear":
-                                if (DiscordLogger.Settings.LoggerIgnorelist.Count > 0)
-                                {
-                                    DiscordLogger.Settings.LoggerIgnorelist.Clear();
-                                    SettingsManager.Save(DiscordLogger.Settings);
-                                    SdtdConsole.Instance.Output("ignore list cleared");
-                                }
-                                else
-                                {
-                                    SdtdConsole.Instance.Output("ignore list was already clear");
-                                }
-                                return;
-                        }
-                        break;
-                    case "set":
-                        switch (_params[1].ToLower())
-                        {
-                            case "level":
-                                if (_params.Count != 3) { break; }
-                                switch (_params[2].ToLower())
-                                {
-                                    case "warn":
-                                        DiscordLogger.Settings.SetLogLevel(LogType.Warning);
-                                        SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Warning}");
-                                        return;
-                                    case "err":
-                                        DiscordLogger.Settings.SetLogLevel(LogType.Error);
-                                        SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Error}");
-                                        return;
-                                }
+                    switch (_params[0].ToLower())
+                    {
+                        case "settings":
+                            SdtdConsole.Instance.Output(DiscordLogger.Settings.ToString());
+                            return;
+                        case "add":
+                            if (_params.Count != 3)
+                            {
                                 break;
-                            case "limit":
-                                if (_params.Count != 3)
-                                {
-                                    break;
-                                }
-                                if (int.TryParse(_params[2], out var limit))
-                                {
-                                    DiscordLogger.Settings.RollingLimit = limit;
+                            }
+                            switch (_params[1].ToLower())
+                            {
+                                case "log":
+                                    DiscordLogger.Settings.LoggerWebhooks.Add(_params[2]);
                                     SettingsManager.Save(DiscordLogger.Settings);
-                                    DiscordLogger.RollingQueue.UpdateLimit(limit);
-                                    SdtdConsole.Instance.Output($"successfully updated log limit to {limit}");
                                     return;
-                                }
-                                break;
-                            case "message":
-                                if (_params.Count != 4) { break; }
-                                switch (_params[2].ToLower())
-                                {
-                                    case "awake":
-                                        DiscordLogger.Settings.MessageOnGameAwake = _params[3];
-                                        SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated MessageOnGameAwake to {_params[3]}");
-                                        return;
-                                    case "start":
-                                        DiscordLogger.Settings.MessageOnGameStartDone = _params[3];
-                                        SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated MessageOnGameStartDone to {_params[3]}");
-                                        return;
-                                    case "shutdown":
-                                        DiscordLogger.Settings.MessageOnGameShutdown = _params[3];
-                                        SettingsManager.Save(DiscordLogger.Settings);
-                                        SdtdConsole.Instance.Output($"successfully updated MessageOnGameShutdown to {_params[3]}");
-                                        return;
-                                }
-                                break;
-                        }
-                        break;
-                    case "test":
-                        if (_params.Count != 2)
-                        {
+                                case "status":
+                                    DiscordLogger.Settings.StatusWebhooks.Add(_params[2]);
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    return;
+                            }
                             break;
-                        }
-                        _ = ThreadManager.StartCoroutine(DiscordLogger.Send(_params[1], Payload.Info("Test Message").Serialize()));
-                        return;
+                        case "remove":
+                            if (_params.Count != 3)
+                            {
+                                break;
+                            }
+                            switch (_params[1].ToLower())
+                            {
+                                case "log":
+                                    _ = DiscordLogger.Settings.LoggerWebhooks.Remove(_params[2]);
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    return;
+                                case "status":
+                                    _ = DiscordLogger.Settings.StatusWebhooks.Remove(_params[2]);
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    return;
+                            }
+                            break;
+                        case "clear":
+                            if (_params.Count != 2)
+                            {
+                                break;
+                            }
+                            switch (_params[1].ToLower())
+                            {
+                                case "log":
+                                    DiscordLogger.Settings.LoggerWebhooks.Clear();
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    return;
+                                case "status":
+                                    DiscordLogger.Settings.StatusWebhooks.Clear();
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    return;
+                            }
+                            break;
+                        case "ignore":
+                            switch (_params[1].ToLower())
+                            {
+                                case "add":
+                                    if (_params.Count != 3)
+                                    {
+                                        break;
+                                    }
+                                    DiscordLogger.Settings.LoggerIgnorelist.Add(_params[2]);
+                                    SettingsManager.Save(DiscordLogger.Settings);
+                                    SdtdConsole.Instance.Output("ignore entry added");
+                                    return;
+                                case "remove":
+                                    if (_params.Count != 3)
+                                    {
+                                        break;
+                                    }
+                                    if (DiscordLogger.Settings.LoggerIgnorelist.Remove(_params[2]))
+                                    {
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        SdtdConsole.Instance.Output("ignore entry removed");
+                                    }
+                                    else
+                                    {
+                                        SdtdConsole.Instance.Output("could not find an ignore entry matching what you provided");
+                                    }
+                                    return;
+                                case "clear":
+                                    if (DiscordLogger.Settings.LoggerIgnorelist.Count > 0)
+                                    {
+                                        DiscordLogger.Settings.LoggerIgnorelist.Clear();
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        SdtdConsole.Instance.Output("ignore list cleared");
+                                    }
+                                    else
+                                    {
+                                        SdtdConsole.Instance.Output("ignore list was already clear");
+                                    }
+                                    return;
+                            }
+                            break;
+                        case "set":
+                            switch (_params[1].ToLower())
+                            {
+                                case "level":
+                                    if (_params.Count != 3) { break; }
+                                    switch (_params[2].ToLower())
+                                    {
+                                        case "warn":
+                                            DiscordLogger.Settings.SetLogLevel(LogType.Warning);
+                                            SettingsManager.Save(DiscordLogger.Settings);
+                                            SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Warning}");
+                                            return;
+                                        case "err":
+                                            DiscordLogger.Settings.SetLogLevel(LogType.Error);
+                                            SettingsManager.Save(DiscordLogger.Settings);
+                                            SdtdConsole.Instance.Output($"successfully updated log level to {LogType.Error}");
+                                            return;
+                                    }
+                                    break;
+                                case "limit":
+                                    if (_params.Count != 3)
+                                    {
+                                        break;
+                                    }
+                                    if (int.TryParse(_params[2], out var limit))
+                                    {
+                                        DiscordLogger.Settings.RollingLimit = limit;
+                                        SettingsManager.Save(DiscordLogger.Settings);
+                                        DiscordLogger.RollingQueue.UpdateLimit(limit);
+                                        SdtdConsole.Instance.Output($"successfully updated log limit to {limit}");
+                                        return;
+                                    }
+                                    break;
+                                case "message":
+                                    if (_params.Count != 4) { break; }
+                                    switch (_params[2].ToLower())
+                                    {
+                                        case "awake":
+                                            DiscordLogger.Settings.MessageOnGameAwake = _params[3];
+                                            SettingsManager.Save(DiscordLogger.Settings);
+                                            SdtdConsole.Instance.Output($"successfully updated MessageOnGameAwake to {_params[3]}");
+                                            return;
+                                        case "start":
+                                            DiscordLogger.Settings.MessageOnGameStartDone = _params[3];
+                                            SettingsManager.Save(DiscordLogger.Settings);
+                                            SdtdConsole.Instance.Output($"successfully updated MessageOnGameStartDone to {_params[3]}");
+                                            return;
+                                        case "shutdown":
+                                            DiscordLogger.Settings.MessageOnGameShutdown = _params[3];
+                                            SettingsManager.Save(DiscordLogger.Settings);
+                                            SdtdConsole.Instance.Output($"successfully updated MessageOnGameShutdown to {_params[3]}");
+                                            return;
+                                    }
+                                    break;
+                            }
+                            break;
+                        case "test":
+                            if (_params.Count != 2)
+                            {
+                                break;
+                            }
+                            _ = ThreadManager.StartCoroutine(DiscordLogger.Send(_params[1], Payload.Info("Test Message").Serialize()));
+                            return;
+                    }
                 }
                 SdtdConsole.Instance.Output($"Invald request; run 'help {Commands[0]}' for more info");
             }
