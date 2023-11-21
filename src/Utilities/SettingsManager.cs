@@ -11,6 +11,7 @@ namespace DiscordLogHook.Utilities
 
         internal static Settings Load()
         {
+            CreatePathIfMissing();
             Settings settings;
             try
             {
@@ -32,6 +33,11 @@ namespace DiscordLogHook.Utilities
                 log.Warn($"Unhandled exception encountered when attempting to load settings for Discord Log Hook mod; filename: {filename}", e);
             }
             return null;
+        }
+
+        internal static void CreatePathIfMissing()
+        {
+            _ = Directory.CreateDirectory(GameIO.GetSaveGameDir());
         }
 
         private static Settings CreateFirstFile()
