@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.2] - 2023-11-21
 
 - add support section to readme
+- fix initial settings creation error on first start
 - update refs to a21.2 b30 (stable)
 
 ## [1.0.1] - 2023-06-30
