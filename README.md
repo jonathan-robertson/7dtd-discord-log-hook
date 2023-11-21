@@ -1,6 +1,6 @@
 # Discord Log Hook
 
-[![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-A21%20b324-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml)
+[![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-A21.2%20b30-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml)
 
 - [Discord Log Hook](#discord-log-hook)
   - [Features](#features)
