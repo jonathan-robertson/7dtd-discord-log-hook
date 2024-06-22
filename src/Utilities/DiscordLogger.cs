@@ -74,11 +74,10 @@ namespace DiscordLogHook.Utilities
          */
         internal static IEnumerator Send(string url, string body)
         {
-            using (var request = UnityWebRequest.Post(url, body))
+            using (var request = UnityWebRequest.Post(url, body, "application/json"))
             {
                 request.uploadHandler = new UploadHandlerRaw(new UTF8Encoding().GetBytes(body));
                 request.downloadHandler = new DownloadHandlerBuffer();
-                request.SetRequestHeader("Content-Type", "application/json");
                 request.SetRequestHeader("cache-control", "no-cache");
                 yield return request.SendWebRequest();
                 // NOTE: intentionally ignoring response for faster logging... and because it would cause control loops

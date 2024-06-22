@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - ?
 
-- update references for 7dtd-1.0
+- update references for 7dtd-1.0-b326
 
 ## [1.0.2] - 2023-11-21
 
