@@ -1,10 +1,25 @@
 ﻿using DiscordLogHook.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace DiscordLogHook.Data
 {
     internal class Payload
     {
+        /// <summary>
+        /// Number of characters Discord limits content fields to.
+        /// </summary>
+        /// <see cref="https://discord.com/developers/docs/resources/webhook#execute-webhook-jsonform-params"/>
+        private const int DISCORD_CONTENT_CHAR_LIMIT = 2000;
+
+        private const int INFO_COLOR = 32767;
+        private const int WARN_COLOR = 16744448;
+        private const int ERR_COLOR = 16711807;
+        private const int TRACE_COLOR = 8388863;
+
+        private readonly string _logPattern = @"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} \d*\.\d{3}) (INF|WRN|ERR|EXC) (.*)";
+
         /**
          * <summary>the message contents (up to 2000 characters)</summary>
          */
@@ -48,91 +63,155 @@ namespace DiscordLogHook.Data
 
         public Payload() { }
 
-        public Payload(string message, List<string> previousLines, int mainColor = 16744448, int historyColor = 32767)
+        public Payload(string message)
         {
-            if (previousLines != null && previousLines.Count > 0)
-            {
-                var historyPrefix = previousLines.Count == DiscordLogger.Settings.RollingLimit ? "...\n" : "";
-                embeds = new Embed[2] {
-                    new Embed() {
-                        description = historyPrefix + string.Join("\n", previousLines),
-                        color = historyColor
-                    },
-                    new Embed() {
-                        description = message,
-                        color = mainColor
-                    }
-                };
-            }
-            else
-            {
-                embeds = new Embed[1]{
-                    new Embed() {
-                        description = message,
-                        color = mainColor
-                    }
-                };
-            }
+            SetContent(message);
         }
 
-        public Payload(string message, string trace, List<string> previousLines, int mainColor = 16711807, int traceColor = 8388863, int historyColor = 32767)
+        // TODO: come to think of it... hand-jamming JSON would be more efficient and faster than what I'm doing here
+        public Payload(string message, List<string> previousLines, int color = INFO_COLOR, int historyColor = INFO_COLOR)
         {
-            if (previousLines != null && previousLines.Count > 0)
-            {
-                var historyPrefix = previousLines.Count == DiscordLogger.Settings.RollingLimit ? "...\n" : "";
-                embeds = new Embed[3] {
-                    new Embed() {
-                        description = historyPrefix + string.Join("\n", previousLines),
-                        color = historyColor
+            SetContent(message);
+            embeds = previousLines != null && previousLines.Count > 0
+                ? (new Embed[] {
+                    new Embed()
+                    {
+                        color = historyColor,
+                        description = $"...\n{string.Join("\n", previousLines)}",
+                        footer = new EmbedFooter() {
+                            text = "logs leading up to event"
+                        },
                     },
-                    new Embed() {
+                    new Embed()
+                    {
+                        color = color,
                         description = message,
-                        color = mainColor
+                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        footer = new EmbedFooter() {
+                            text = "server local time"
+                        },
+                    },
+                })
+                : (new Embed[] {
+                    new Embed()
+                    {
+                        color = color,
+                        description = message,
+                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        footer = new EmbedFooter() {
+                            text = "server local time"
+                        },
+                    },
+                });
+        }
+
+        public Payload(string message, string trace, List<string> previousLines, int color = INFO_COLOR, int historyColor = INFO_COLOR, int traceColor = TRACE_COLOR)
+        {
+            SetContent(message);
+            embeds = previousLines != null && previousLines.Count > 0
+                ? (new Embed[] {
+                    new Embed()
+                    {
+                        color = historyColor,
+                        description = $"...\n{string.Join("\n", previousLines)}",
+                        footer = new EmbedFooter() {
+                            text = "logs leading up to event"
+                        },
+                    },
+                    new Embed()
+                    {
+                        color = color,
+                        description = message,
+                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        footer = new EmbedFooter() {
+                            text = "server local time"
+                        },
                     },
                     new Embed() {
                         description = trace,
-                        color = traceColor
-                    }
-            };
-            }
-            else
-            {
-                embeds = new Embed[2] {
-                    new Embed() {
+                        color = traceColor,
+                    },
+                })
+                : (new Embed[] {
+                    new Embed()
+                    {
+                        color = color,
                         description = message,
-                        color = mainColor
+                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        footer = new EmbedFooter() {
+                            text = "server local time"
+                        },
                     },
                     new Embed() {
                         description = trace,
-                        color = traceColor
-                    }
-                };
-            }
+                        color = traceColor,
+                    },
+                });
         }
 
-        public static Payload Info(string message)
+        public static Payload Content(string message)
         {
-            return new Payload(message, null, 32767);
+            return new Payload(message);
+        }
+
+        public static Payload Info(string message, List<string> previousLines)
+        {
+            return new Payload(message, previousLines, INFO_COLOR);
         }
 
         public static Payload Warn(string message, List<string> previousLines)
         {
-            return new Payload(message, previousLines, 16744448);
+            return new Payload(message, previousLines, WARN_COLOR);
         }
 
         public static Payload Err(string message, List<string> previousLines)
         {
-            return new Payload(message, previousLines, 16711807);
+            return new Payload(message, previousLines, ERR_COLOR);
         }
 
         public static Payload Err(string message, string trace, List<string> previousLines)
         {
-            return new Payload(message, trace, previousLines, 16711807);
+            return new Payload(message, trace, previousLines, ERR_COLOR);
         }
 
         public string Serialize()
         {
             return Json<Payload>.Serialize(this);
+        }
+
+        /// <summary>
+        /// Reorganize timestamp and replace INF/WRN/ERR/EXC with an appropriate emoji and truncate message length to what Discord allows.
+        /// </summary>
+        /// <param name="message">Incoming message to manipulate and store.</param>
+        protected void SetContent(string message)
+        {
+            var matches = Regex.Matches(message, _logPattern, RegexOptions.Multiline);
+            if (matches.Count == 1 && matches[0].Groups.Count == 4)
+            {
+                switch (matches[0].Groups[2].Value)
+                {
+                    case "INF":
+                        content = $"ℹ️ {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                        break;
+                    case "WRN":
+                        content = $"⚠️ {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                        break;
+                    case "ERR":
+                        content = $"📟 {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                        break;
+                    case "EXC":
+                        content = $"🚨 {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                        break;
+                }
+            }
+            else
+            {
+                content = message;
+            }
+            if (content.Length > DISCORD_CONTENT_CHAR_LIMIT)
+            {
+                content = $"{content.Substring(content.Length - DISCORD_CONTENT_CHAR_LIMIT - 3)}...";
+            }
         }
     }
 }
