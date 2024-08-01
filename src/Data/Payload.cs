@@ -7,6 +7,8 @@ namespace DiscordLogHook.Data
 {
     internal class Payload
     {
+        private static readonly ModLog<Payload> _log = new ModLog<Payload>();
+
         /// <summary>
         /// Number of characters Discord limits content fields to.
         /// </summary>
@@ -71,6 +73,7 @@ namespace DiscordLogHook.Data
         // TODO: come to think of it... hand-jamming JSON would be more efficient and faster than what I'm doing here
         public Payload(string message, List<string> previousLines, int color = INFO_COLOR, int historyColor = INFO_COLOR)
         {
+            var time = GetCurrentTime();
             SetContent(message);
             embeds = previousLines != null && previousLines.Count > 0
                 ? (new Embed[] {
@@ -86,9 +89,9 @@ namespace DiscordLogHook.Data
                     {
                         color = color,
                         description = message,
-                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        timestamp = time,
                         footer = new EmbedFooter() {
-                            text = "server local time"
+                            text = "local time"
                         },
                     },
                 })
@@ -97,9 +100,9 @@ namespace DiscordLogHook.Data
                     {
                         color = color,
                         description = message,
-                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        timestamp = time,
                         footer = new EmbedFooter() {
-                            text = "server local time"
+                            text = "local time"
                         },
                     },
                 });
@@ -107,6 +110,7 @@ namespace DiscordLogHook.Data
 
         public Payload(string message, string trace, List<string> previousLines, int color = INFO_COLOR, int historyColor = INFO_COLOR, int traceColor = TRACE_COLOR)
         {
+            var time = GetCurrentTime();
             SetContent(message);
             embeds = previousLines != null && previousLines.Count > 0
                 ? (new Embed[] {
@@ -122,14 +126,18 @@ namespace DiscordLogHook.Data
                     {
                         color = color,
                         description = message,
-                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        timestamp = time,
                         footer = new EmbedFooter() {
-                            text = "server local time"
+                            text = "local time"
                         },
                     },
                     new Embed() {
-                        description = trace,
                         color = traceColor,
+                        description = trace,
+                        timestamp = time,
+                        footer = new EmbedFooter() {
+                            text = "local time"
+                        },
                     },
                 })
                 : (new Embed[] {
@@ -137,14 +145,18 @@ namespace DiscordLogHook.Data
                     {
                         color = color,
                         description = message,
-                        timestamp = DateTime.Now.ToLocalTime().ToString("s"),
+                        timestamp = time,
                         footer = new EmbedFooter() {
-                            text = "server local time"
+                            text = "local time"
                         },
                     },
                     new Embed() {
-                        description = trace,
                         color = traceColor,
+                        description = trace,
+                        timestamp = time,
+                        footer = new EmbedFooter() {
+                            text = "local time"
+                        },
                     },
                 });
         }
@@ -212,6 +224,15 @@ namespace DiscordLogHook.Data
             {
                 content = $"{content.Substring(content.Length - DISCORD_CONTENT_CHAR_LIMIT - 3)}...";
             }
+        }
+
+        /// <summary>
+        /// Return the timestamp in the time zone Discord expects (UTC) so it can handle local timezone conversion for each user.
+        /// </summary>
+        /// <returns>The current time in UTC which Discord will convert locally for each users' local timezone.</returns>
+        protected static string GetCurrentTime()
+        {
+            return DateTime.Now.ToUniversalTime().ToString("s");
         }
     }
 }
