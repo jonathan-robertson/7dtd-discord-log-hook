@@ -19,7 +19,7 @@
 
     internal class EmbedFooter
     {
-        public string test;
+        public string text;
         public string icon_url;
         public string proxy_icon_url;
     }

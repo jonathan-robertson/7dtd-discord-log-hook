@@ -1,7 +1,6 @@
 ﻿using DiscordLogHook.Data;
 using System.Collections;
 using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -9,6 +8,8 @@ namespace DiscordLogHook.Utilities
 {
     internal class DiscordLogger
     {
+        private static readonly ModLog<DiscordLogger> _log = new ModLog<DiscordLogger>();
+
         public static Settings Settings { get; private set; }
         internal static RollingQueue RollingQueue { get; private set; }
 
@@ -22,7 +23,7 @@ namespace DiscordLogHook.Utilities
 
         internal static void LogCallbackDelegate(string _msg, string _trace, LogType _type)
         {
-            if (_type == LogType.Log || _type == LogType.Warning || Settings.LoggerIgnorelist.Where(item => _msg.Contains(item)).Any())
+            if (_type > Settings.GetLogLevel() || Settings.LoggerIgnorelist.Where(item => _msg.Contains(item)).Any())
             {
                 if (Settings.LoggerWebhooks.Count > 0)
                 {
@@ -31,25 +32,31 @@ namespace DiscordLogHook.Utilities
                 return;
             }
 
-            if (_type > Settings.GetLogLevel()) { return; }
-
             switch (_type)
             {
+                case LogType.Log:
+                    var infoContent = Payload.Info(_msg, RollingQueue.GetLines()).Serialize();
+                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, infoContent)));
+                    return;
                 case LogType.Warning:
-                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Warn(_msg, RollingQueue.GetLines()).Serialize())));
+                    var warnContent = Payload.Warn(_msg, RollingQueue.GetLines()).Serialize();
+                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, warnContent)));
                     return;
                 case LogType.Error:
-                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, RollingQueue.GetLines()).Serialize())));
+                    var errContent = Payload.Err(_msg, RollingQueue.GetLines()).Serialize();
+                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, errContent)));
                     return;
                 case LogType.Exception:
-                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Err(_msg, _trace, RollingQueue.GetLines()).Serialize())));
+                    var excContent = Payload.Err(_msg, _trace, RollingQueue.GetLines()).Serialize();
+                    Settings.LoggerWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, excContent)));
                     return;
             }
         }
 
         internal static void OnGameAwake()
         {
-            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForAwake()).Serialize())));
+            var content = Payload.Content(Settings.GetMessageForAwake()).Serialize();
+            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, content)));
 
             // Note: Register here instead of in InitMod to ensure this is the final handler registered to the GameStartDone delegate
             ModEvents.GameStartDone.RegisterHandler(OnGameStartTrulyDone);
@@ -57,12 +64,14 @@ namespace DiscordLogHook.Utilities
 
         internal static void OnGameStartTrulyDone()
         {
-            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForStartDone()).Serialize())));
+            var content = Payload.Content(Settings.GetMessageForStartDone()).Serialize();
+            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, content)));
         }
 
         internal static void OnGameShutdown()
         {
-            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, Payload.Info(Settings.GetMessageForShutdown()).Serialize())));
+            var content = Payload.Content(Settings.GetMessageForShutdown()).Serialize();
+            Settings.StatusWebhooks.ForEach(url => ThreadManager.StartCoroutine(Send(url, content)));
         }
 
         /**
@@ -74,30 +83,18 @@ namespace DiscordLogHook.Utilities
          */
         internal static IEnumerator Send(string url, string body)
         {
-            using (var request = UnityWebRequest.Post(url, body))
+            _log.Trace($"attempting to send...\nurl: {url}\nbody: {body}");
+            using (var request = UnityWebRequest.Post(url, body, "application/json"))
             {
-                request.uploadHandler = new UploadHandlerRaw(new UTF8Encoding().GetBytes(body));
-                request.downloadHandler = new DownloadHandlerBuffer();
-                request.SetRequestHeader("Content-Type", "application/json");
-                request.SetRequestHeader("cache-control", "no-cache");
                 yield return request.SendWebRequest();
-                // NOTE: intentionally ignoring response for faster logging... and because it would cause control loops
-                /*
-                if (request.result != UnityWebRequest.Result.Success) {
-                    onFailure?.Invoke(new Exception($"Request failed with web result of {request.result}"));
-                } else {
-                    if (onSuccess != null) {
-                        try {
-                            while (!request.downloadHandler.isDone) { }
-                            // TODO: shouldn't there be a timeout on this?
-                            onSuccess(request.downloadHandler.text);
-                        } catch (Exception e) {
-                            //log.Warn("Failed to finish downloading response body", e);
-                            onFailure?.Invoke(e);
-                        }
-                    }
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    _log.Debug($"request did not succeed: {request.result} | {request.responseCode}");
                 }
-                */
+                else
+                {
+                    _log.Trace("request succeeded");
+                }
             }
         }
     }

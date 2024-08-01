@@ -6,11 +6,11 @@ namespace DiscordLogHook.Data
     public class Settings
     {
         public static readonly string DefaultMessageOnGameShutdown = "⏹️ Server stopped";
-        public static readonly string DefaultMessageOnGameAwake = "♻️ Server starting, should be ready for players within a few minutes ⏱️";
-        public static readonly string DefaultMessageOnGameStartDone = "✅ Server ready to receive players 🎉";
+        public static readonly string DefaultMessageOnGameAwake = "⏱️ Server starting and should be ready for players within a few minutes";
+        public static readonly string DefaultMessageOnGameStartDone = "✅ Server online and ready for players to login";
 
         public int RollingLimit { get; set; } = 10;
-        public int LogLevel { get; set; } = (int)LogType.Warning;
+        public int LogLevel { get; set; } = (int)LogType.Error;
         public List<string> LoggerWebhooks { get; set; } = new List<string>();
         public List<string> LoggerIgnorelist { get; set; } = new List<string>();
         public List<string> StatusWebhooks { get; set; } = new List<string>();

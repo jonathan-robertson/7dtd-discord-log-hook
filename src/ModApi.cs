@@ -4,7 +4,7 @@ namespace DiscordLogHook
 {
     public class ModApi : IModApi
     {
-        public static bool DebugMode { get; private set; } = false;
+        public static bool DebugMode { get; set; } = false;
 
         public void InitMod(Mod _modInstance)
         {

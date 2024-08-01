@@ -36,23 +36,24 @@ namespace DiscordLogHook.Commands
                 { "set limit <number>", "adjust the size of the rolling log entry cache for previous higher-level log entries you include in alerts. In other words: when an alert fires, how many of the message before that alerting message do you want to have included?" },
                 { "set message <awake|start|shutdown> <message>", $"set the given server status message; set as \"\" to use default messages...\n  DefaultMessageOnGameShutdown: {Settings.DefaultMessageOnGameShutdown}\n  DefaultMessageOnGameAwake: {Settings.DefaultMessageOnGameAwake}\n  DefaultMessageOnGameStartDone: {Settings.DefaultMessageOnGameStartDone}" },
                 { "test <url>", "send a test message to the provided webhook url to ensure you have a solid connection; must press enter twice" },
+                { "debug|dm", "toggle debug mode for tracing and debug logging (for troubleshooting)" }
             };
 
             var i = 1; var j = 1;
             help = $"Usage:\n  {string.Join("\n  ", dict.Keys.Select(command => $"{i++}. {GetCommands()[0]} {command}").ToList())}\nDescription Overview\n{string.Join("\n", dict.Values.Select(description => $"{j++}. {description}").ToList())}";
         }
 
-        protected override string[] getCommands()
+        public override string[] getCommands()
         {
             return Commands;
         }
 
-        protected override string getDescription()
+        public override string getDescription()
         {
             return "Configure or adjust settings for your Discord Log Hook.";
         }
 
-        public override string GetHelp()
+        public override string getHelp()
         {
             return help;
         }
@@ -221,7 +222,13 @@ namespace DiscordLogHook.Commands
                             {
                                 break;
                             }
-                            _ = ThreadManager.StartCoroutine(DiscordLogger.Send(_params[1], Payload.Info("Test Message").Serialize()));
+                            SdtdConsole.Instance.Output($"Request received; attempting to send test message to {_params[1]}");
+                            _ = ThreadManager.StartCoroutine(DiscordLogger.Send(_params[1], Payload.Info("Test Message", null).Serialize()));
+                            return;
+                        case "debug":
+                        case "dm":
+                            ModApi.DebugMode = !ModApi.DebugMode;
+                            SdtdConsole.Instance.Output($"debug logging mode has been {(ModApi.DebugMode ? "enabled" : "disabled")} for the discord log hook.");
                             return;
                     }
                 }

@@ -2,6 +2,7 @@
 using DiscordLogHook.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace DiscordLogHook
 {
@@ -86,6 +87,75 @@ namespace DiscordLogHook
             Assert.AreEqual("aasdfgHJkL;", _settings.MessageOnGameShutdown);
             Assert.AreEqual("", _settings.MessageOnGameAwake);
             Assert.AreEqual("", _settings.MessageOnGameStartDone);
+        }
+
+        [TestMethod]
+        public void TestRegex()
+        {
+            //var message = "2024-07-31T06:57:32 87.753 INF Test info.";
+            //var _logPattern = Regex.Escape(@"^([\d-T: .]*) (\w)* (.*)$");
+            //var matches = Regex.Matches(message, _logPattern, RegexOptions.IgnorePatternWhitespace);
+            //Assert.AreEqual(3, matches.Count);
+            //var _explicitLogPattern = Regex.Escape("^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2} \\d\\.\\d{3}) (INF|WRN|ERR|EXC) (.*)$");
+
+
+
+            var pattern = @"^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2} \d*\.\d{3}) (INF|WRN|ERR|EXC) (.*)";
+            //var pattern = @"^([\d-T: .]*) (\w)* (.*)$";
+            //var input = @"2024-07-31T06:23:55 4.970 WRN Couldn't create a Convex Mesh from source mesh ""Head"" within the maximum polygons limit (256). The partial hull will be used. Consider simplifying your mesh.";
+            var input = "2024-07-31T06:57:32 87.753 INF Test info.";
+            var matches = Regex.Matches(input, pattern, RegexOptions.Multiline);
+
+            Assert.AreEqual(1, matches.Count);
+            Assert.AreEqual(4, matches[0].Groups.Count);
+            Assert.AreEqual("2024-07-31T06:57:32 87.753", matches[0].Groups[1].Value);
+            Assert.AreEqual("INF", matches[0].Groups[2].Value);
+            Assert.AreEqual("Test info.", matches[0].Groups[3].Value);
+
+            var content = "";
+            switch (matches[0].Groups[2].Value)
+            {
+                case "INF":
+                    content = $"ℹ️ {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                    break;
+                case "WRN":
+                    content = $"⚠️ {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                    break;
+                case "ERR":
+                    content = $"📟 {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                    break;
+                case "EXC":
+                    content = $"🚨 {matches[0].Groups[3].Value}\n> {matches[0].Groups[1].Value}";
+                    break;
+            }
+            Assert.AreEqual("ℹ️ Test info.\n> 2024-07-31T06:57:32 87.753", content);
+        }
+
+        [TestMethod]
+        public void TestSetContent()
+        {
+            var lines = new List<string>()
+            {
+                "2024-07-31T06:57:32 87.737 INF Dymesh: Mesh location: C:\\Users\\user\\AppData\\Roaming/7DaysToDie\\Saves/World/Game/DynamicMeshes/",
+                "2024-07-31T06:57:32 87.738 INF Dymesh: Loading Items: C:\\Users\\user\\AppData\\Roaming/7DaysToDie\\Saves/World/Game/DynamicMeshes/",
+                "2024-07-31T06:57:32 87.750 INF Dymesh: Loaded Items: 1",
+                "2024-07-31T06:57:32 87.750 INF Dymesh: Loading all items took: 0.0120208 seconds.",
+                "2024-07-31T06:57:32 87.753 INF Clearing queues.",
+                "2024-07-31T06:57:32 87.753 INF Cleared queues.",
+                "2024-07-31T06:57:32 87.754 INF Dynamic thread starting",
+                "2024-07-31T06:57:32 87.757 INF Dymesh door replacement: imposterBlock",
+                "2024-07-31T06:57:34 90.282 INF Executing command 'exception' by Terminal Window",
+            };
+            var trace = "  at CommandExtensions.Commands.ConsoleCmdException.Execute (System.Collections.Generic.List`1[T] _params, CommandSenderInfo _senderInfo) [0x00022] in <5a4190d3fa7d49858bf72d271fb8b84f>:0\r\n  at (wrapper dynamic-method) SdtdConsole.DMD<System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] SdtdConsole:executeCommand(System.String, CommandSenderInfo)>(SdtdConsole,string,CommandSenderInfo)\r\nUnityEngine.StackTraceUtility:ExtractStringFromException(Object)\r\nLog:Exception(Exception)\r\nSdtdConsole:DMD<System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] SdtdConsole:executeCommand(System.String, CommandSenderInfo)>(SdtdConsole, String, CommandSenderInfo)\r\nMonoMod.Utils.DynamicMethodDefinition:SyncProxy<System.Collections.Generic.List`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] SdtdConsole:executeCommand(System.String, CommandSenderInfo)>(SdtdConsole, String, CommandSenderInfo)\r\nSdtdConsole:Update()\r\n";
+
+            var info = Payload.Info("2024-07-31T06:57:32 87.753 INF Test info.", lines);
+            Assert.AreEqual("ℹ️ Test info.\n> 2024-07-31T06:57:32 87.753", info.content);
+            var warn = Payload.Warn("2024-07-31T06:57:34 90.283 WRN Test warning.", lines);
+            Assert.AreEqual("⚠️ Test warning.\n> 2024-07-31T06:57:34 90.283", warn.content);
+            var err = Payload.Err("2024-07-31T06:57:34 90.283 ERR Test error.", lines);
+            Assert.AreEqual("📟 Test error.\n> 2024-07-31T06:57:34 90.283", err.content);
+            var exc = Payload.Err("2024-07-31T06:00:29 81.339 EXC Test exception.", trace, lines);
+            Assert.AreEqual("🚨 Test exception.\n> 2024-07-31T06:00:29 81.339", exc.content);
         }
     }
 }
