@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update content for easier copy on mobile
 - update default log level to error
 - update default status messages
-- update references for 7dtd-1.0-b326
+- update references for 7dtd-1.0-b333
 - update status events to be more compact
 
 ## [1.0.2] - 2023-11-21
