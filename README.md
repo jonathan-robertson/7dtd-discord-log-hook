@@ -1,6 +1,6 @@
 # Discord Log Hook
 
-[![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-1.0%20b326-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml)
+[![🧪 Tested On](https://img.shields.io/badge/🧪%20Tested%20On-1.0%20b333-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml)
 
 - [Discord Log Hook](#discord-log-hook)
   - [Summary](#summary)
@@ -44,6 +44,7 @@ Each of options would be called with the command `discordLogHook` or `dlh`:
   - DefaultMessageOnGameAwake: "♻️ Server starting, should be ready for players within a few minutes ⏱️"
   - DefaultMessageOnGameStartDone: "✅ Server ready to receive players 🎉"
 - `test <url>`: send a test message to the provided webhook url to ensure you have a solid connection; must press enter twice
+- `debug|dm`: enable debug mode for troubleshooting potential issues with discord requests
 
 ## Setup
 
