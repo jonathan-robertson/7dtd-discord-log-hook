@@ -1,18 +1,6 @@
 # Discord Log Hook
 
-[![🧪 Tested On 7DTD 1.1 (b14)](https://img.shields.io/badge/🧪%20Tested%20On-7DTD%201.1%20(b14)-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml)
-
-- [Discord Log Hook](#discord-log-hook)
-  - [Summary](#summary)
-    - [Support](#support)
-  - [Features](#features)
-  - [Commands](#commands)
-  - [Setup](#setup)
-    - [Environment / EAC / Hosting Requirements](#environment--eac--hosting-requirements)
-    - [Map Considerations for Installation or Uninstallation](#map-considerations-for-installation-or-uninstallation)
-    - [Windows/Linux Installation (Server via FTP from Windows PC)](#windowslinux-installation-server-via-ftp-from-windows-pc)
-    - [Linux Server Installation (Server via SSH)](#linux-server-installation-server-via-ssh)
-    - [Create a Discord Webhook](#create-a-discord-webhook)
+[![🧪 Tested On 7DTD 1.2 (b27)](https://img.shields.io/badge/🧪%20Tested%20On-7DTD%201.2%20(b27)-blue.svg)](https://7daystodie.com/) [![🧪 Tested On 7DTD 1.1 (b14)](https://img.shields.io/badge/🧪%20Tested%20On-7DTD%201.1%20(b14)-blue.svg)](https://7daystodie.com/) [![🧪 Tested On 7DTD 1.0 (b333)](https://img.shields.io/badge/🧪%20Tested%20On-7DTD%201.0%20(b333)-blue.svg)](https://7daystodie.com/) [![📦 Automated Release](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml/badge.svg)](https://github.com/jonathan-robertson/7dtd-discord-log-hook/actions/workflows/release.yml)
 
 ## Summary
 
@@ -54,11 +42,11 @@ If you have trouble getting things working, you can reach out to me for support 
 
 ### Environment / EAC / Hosting Requirements
 
-Environment | Compatible | Does EAC Need to be Disabled? | Who needs to install?
---- | --- | --- | ---
-Dedicated Server | Yes | no | only server
-Peer-to-Peer Hosting | no | N/A | N/A
-Single Player Game | no | N/A | N/A
+| Environment          | Compatible | Does EAC Need to be Disabled? | Who needs to install? |
+| -------------------- | ---------- | ----------------------------- | --------------------- |
+| Dedicated Server     | Yes        | no                            | only server           |
+| Peer-to-Peer Hosting | no         | N/A                           | N/A                   |
+| Single Player Game   | no         | N/A                           | N/A                   |
 
 > 🤔 If you aren't sure what some of this means, details steps are provided below to walk you through the setup process.
 
